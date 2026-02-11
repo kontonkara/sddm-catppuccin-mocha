@@ -1,5 +1,4 @@
 import QtQuick 2.15
-import QtMultimedia 5.15
 
 Item {
     id: backgroundRoot
@@ -9,20 +8,20 @@ Item {
     property real backgroundBlur: config.realValue("BackgroundBlur") || 0
     property real backgroundDim: config.realValue("BackgroundDim") || 1.0
 
-    // Color background (default)
+    // Color background (default and fallback)
     Rectangle {
         anchors.fill: parent
         color: "#1e1e2e"
-        visible: backgroundType === "color"
+        visible: backgroundType === "color" || backgroundType === "video"
     }
 
     // Image background (static)
     Image {
         id: imageBackground
         anchors.fill: parent
-        source: (backgroundType === "image" && backgroundPath) ? backgroundPath : ""
+        source: (backgroundType === "image" && backgroundPath && !backgroundPath.endsWith(".gif")) ? backgroundPath : ""
         fillMode: Image.PreserveAspectCrop
-        visible: backgroundType === "image" && status === Image.Ready
+        visible: backgroundType === "image" && !backgroundPath.endsWith(".gif") && status === Image.Ready
         asynchronous: true
         cache: false
 
@@ -63,23 +62,11 @@ Item {
     AnimatedImage {
         id: animatedBackground
         anchors.fill: parent
-        source: (backgroundType === "image" && backgroundPath.endsWith(".gif")) ? backgroundPath : ""
+        source: (backgroundType === "image" && backgroundPath && backgroundPath.endsWith(".gif")) ? backgroundPath : ""
         fillMode: Image.PreserveAspectCrop
-        visible: backgroundType === "image" && backgroundPath.endsWith(".gif")
+        visible: backgroundType === "image" && backgroundPath.endsWith(".gif") && status === AnimatedImage.Ready
         playing: visible
         asynchronous: true
-    }
-
-    // Video background
-    Video {
-        id: videoBackground
-        anchors.fill: parent
-        source: (backgroundType === "video" && backgroundPath) ? backgroundPath : ""
-        fillMode: VideoOutput.PreserveAspectCrop
-        visible: backgroundType === "video"
-        autoPlay: true
-        loops: MediaPlayer.Infinite
-        muted: true
     }
 
     // Dim overlay
@@ -90,11 +77,22 @@ Item {
         visible: backgroundDim < 1.0
     }
 
-    // Fallback to color if background fails to load
+    // Fallback to color if image fails to load
     Rectangle {
         anchors.fill: parent
         color: "#1e1e2e"
-        visible: (backgroundType === "image" && imageBackground.status === Image.Error) ||
-                 (backgroundType === "video" && videoBackground.status === MediaPlayer.InvalidMedia)
+        visible: (backgroundType === "image" && imageBackground.status === Image.Error &&
+                 (animatedBackground.status === AnimatedImage.Error || !backgroundPath.endsWith(".gif")))
+    }
+
+    // Info text for video type (not supported)
+    Text {
+        anchors.centerIn: parent
+        text: "Video backgrounds are not supported in this Qt version.\nUsing solid color instead."
+        color: "#a6adc8"
+        font.pixelSize: 14
+        horizontalAlignment: Text.AlignHCenter
+        visible: backgroundType === "video"
+        opacity: 0.5
     }
 }
