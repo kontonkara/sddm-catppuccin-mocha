@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=sddm-catppuccin-mocha
+Description=minimal-sddm-catppuccin-mocha-theme
+Author=kontonkara
+License=MIT
+Type=sddm-theme
+Version=1.0
+ConfigFile=theme.conf
+MainScript=Main.qml
+Theme-Id=sddm-catppuccin-mocha
+Theme-API=2.0
+QtVersion=6
