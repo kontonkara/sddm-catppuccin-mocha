@@ -12,17 +12,38 @@ Rectangle {
     property bool showPassword: false
     property string usernameMode: config.stringValue("UsernameMode") || "editable"
 
+    // Background component
+    Background {
+        id: background
+        anchors.fill: parent
+    }
+
     // Clock component at the top
     ClockComponent {
         id: clock
     }
 
-    // Center login form
+    // Center login form with entrance animation
     Column {
         id: loginForm
         anchors.centerIn: parent
         spacing: 20
         width: 350
+        opacity: 0
+
+        NumberAnimation on opacity {
+            from: 0
+            to: 1
+            duration: 800
+            easing.type: Easing.OutCubic
+        }
+
+        PropertyAnimation on anchors.verticalCenterOffset {
+            from: 50
+            to: 0
+            duration: 800
+            easing.type: Easing.OutCubic
+        }
 
         InputField {
             id: usernameField

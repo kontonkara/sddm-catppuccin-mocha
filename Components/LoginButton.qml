@@ -5,8 +5,17 @@ Rectangle {
     height: 45
     color: mouseArea.containsMouse ? "#a18cd1" : "#b4befe"
     radius: 8
+    scale: mouseArea.pressed ? 0.98 : 1.0
 
     signal doLogin()
+
+    Behavior on color {
+        ColorAnimation { duration: 200 }
+    }
+
+    Behavior on scale {
+        NumberAnimation { duration: 100 }
+    }
 
     Row {
         anchors.centerIn: parent

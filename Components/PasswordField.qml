@@ -33,16 +33,26 @@ Column {
         border.color: textInput.activeFocus ? "#b4befe" : "#45475a"
         border.width: 2
 
+        Behavior on border.color {
+            ColorAnimation { duration: 200 }
+        }
+
         Row {
             anchors.fill: parent
             anchors.margins: 10
             spacing: 10
 
             Image {
+                id: passwordIcon
                 source: "../Assets/Password.svg"
                 width: 24
                 height: 24
                 anchors.verticalCenter: parent.verticalCenter
+                opacity: textInput.activeFocus ? 1.0 : 0.7
+
+                Behavior on opacity {
+                    NumberAnimation { duration: 200 }
+                }
             }
 
             TextInput {
@@ -64,12 +74,19 @@ Column {
             }
 
             Image {
+                id: toggleIcon
                 source: showPassword ? "../Assets/PasswordShow.svg" : "../Assets/PasswordHide.svg"
                 width: 24
                 height: 24
                 anchors.verticalCenter: parent.verticalCenter
+                scale: toggleMouseArea.pressed ? 0.9 : 1.0
+
+                Behavior on scale {
+                    NumberAnimation { duration: 100 }
+                }
 
                 MouseArea {
+                    id: toggleMouseArea
                     anchors.fill: parent
                     onClicked: passwordField.togglePassword()
                     cursorShape: Qt.PointingHandCursor
