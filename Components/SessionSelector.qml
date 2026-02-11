@@ -6,6 +6,30 @@ Item {
     height: column.height
 
     property int currentIndex: sessionModel.lastIndex
+    property string currentSessionName: ""
+
+    function isDropdownVisible() {
+        return dropdownContainer.visible
+    }
+
+    function closeDropdown() {
+        dropdownContainer.visible = false
+    }
+
+    // Hidden repeater to get session names
+    Repeater {
+        model: sessionModel
+        Item {
+            property int itemIndex: index
+            property string itemName: model.name
+
+            Component.onCompleted: {
+                if (itemIndex === sessionSelectorRoot.currentIndex) {
+                    sessionSelectorRoot.currentSessionName = itemName
+                }
+            }
+        }
+    }
 
     Column {
         id: column
@@ -36,15 +60,7 @@ Item {
                 Text {
                     width: parent.width - 24
                     anchors.verticalCenter: parent.verticalCenter
-                    text: {
-                        var idx = sessionSelectorRoot.currentIndex
-                        if (sessionModel && sessionModel.rowCount() > 0 && idx >= 0 && idx < sessionModel.rowCount()) {
-                            var modelIndex = sessionModel.index(idx, 0)
-                            var name = sessionModel.data(modelIndex, 256)
-                            return name || "Unknown"
-                        }
-                        return "No sessions"
-                    }
+                    text: sessionSelectorRoot.currentSessionName || "Select session"
                     font.pixelSize: 14
                     color: "#cdd6f4"
                     elide: Text.ElideRight
@@ -125,6 +141,7 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             sessionSelectorRoot.currentIndex = index
+                            sessionSelectorRoot.currentSessionName = model.name
                             dropdownContainer.visible = false
                         }
                     }
@@ -133,12 +150,14 @@ Item {
         }
     }
 
-    // Global click handler to close dropdown
-    Connections {
-        target: root
-        function onPressed() {
-            if (dropdownContainer.visible) {
-                dropdownContainer.visible = false
+    // Update current session name when index changes externally
+    onCurrentIndexChanged: {
+        var found = false
+        for (var i = 0; i < sessionModel.rowCount(); i++) {
+            if (i === currentIndex) {
+                // Will be set by Repeater
+                found = true
+                break
             }
         }
     }

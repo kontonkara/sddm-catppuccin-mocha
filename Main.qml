@@ -10,7 +10,7 @@ Rectangle {
     color: "#1e1e2e"  // Catppuccin Mocha base
 
     property bool showPassword: false
-    property string usernameMode: config.stringValue("UsernameMode", "General", "editable")
+    property string usernameMode: config.stringValue("UsernameMode") || "editable"
 
     // Clock component at the top
     ClockComponent {
@@ -61,5 +61,16 @@ Rectangle {
     // Power buttons at the bottom
     PowerButtons {
         id: powerButtons
+    }
+
+    // Global click handler to close dropdowns
+    MouseArea {
+        anchors.fill: parent
+        z: -1
+        onClicked: {
+            if (sessionSelector.isDropdownVisible()) {
+                sessionSelector.closeDropdown()
+            }
+        }
     }
 }
