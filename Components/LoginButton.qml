@@ -19,24 +19,12 @@ Rectangle {
         NumberAnimation { duration: 100 }
     }
 
-    Row {
+    Text {
         anchors.centerIn: parent
-        spacing: 10
-
-        Image {
-            source: "../Assets/Login" + iconColor + ".svg"
-            width: 20
-            height: 20
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Text {
-            text: "Login"
-            font.pixelSize: 16
-            font.bold: true
-            color: "#1e1e2e"
-            anchors.verticalCenter: parent.verticalCenter
-        }
+        text: "Login"
+        font.pixelSize: 16
+        font.bold: true
+        color: "#1e1e2e"
     }
 
     MouseArea {
