@@ -5,40 +5,112 @@ import "Components"
 
 Rectangle {
     id: root
-    width: 1920
-    height: 1080
-    color: "#1e1e2e"  // Catppuccin Mocha base
 
     property bool showPassword: false
     property string usernameMode: config.stringValue("UsernameMode") || "editable"
+    property string primaryMonitorName: config.stringValue("PrimaryMonitor") || ""
+    property bool showBackgroundOnSecondary: config.boolValue("ShowBackgroundOnSecondary") !== false
 
-    // Background component
+    property string currentScreenName: ""
+    property bool isPrimaryScreen: false
+    property bool initialized: false
+
+    Timer {
+        interval: 50
+        running: true
+        repeat: false
+        onTriggered: detectScreen()
+    }
+
+    function detectScreen() {
+        var win = root.Window.window
+
+        if (win) {
+            // Match by window position
+            for (var i = 0; i < Qt.application.screens.length; i++) {
+                var screen = Qt.application.screens[i]
+                if (Math.abs(win.x - screen.virtualX) < 100 && Math.abs(win.y - screen.virtualY) < 100) {
+                    currentScreenName = screen.name
+                    break
+                }
+            }
+        }
+
+        // Determine if primary
+        if (currentScreenName !== "") {
+            if (primaryMonitorName === "") {
+                isPrimaryScreen = (currentScreenName === Qt.application.screens[0].name)
+            } else {
+                isPrimaryScreen = (currentScreenName === primaryMonitorName)
+            }
+        }
+
+        console.log("Screen:", currentScreenName, "| Primary:", isPrimaryScreen)
+
+        initialized = true
+
+        // Start animations if primary
+        if (isPrimaryScreen) {
+            loginFormOpacityAnim.start()
+            loginFormSlideAnim.start()
+            powerButtonsOpacityAnim.start()
+        }
+    }
+
+    color: "#1e1e2e"
+
+    // Debug text (remove after testing)
+    Text {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: 10
+        text: "Screen: " + (currentScreenName || "...") + " | Primary: " + isPrimaryScreen
+        color: "#b4befe"
+        font.pixelSize: 14
+        font.bold: true
+        z: 1000
+        visible: false  // Set to true for debugging
+    }
+
     Background {
         id: background
         anchors.fill: parent
+        visible: isPrimaryScreen || showBackgroundOnSecondary
     }
 
-    // Clock component at the top
+    Rectangle {
+        anchors.fill: parent
+        color: "#1e1e2e"
+        visible: !isPrimaryScreen && !showBackgroundOnSecondary
+    }
+
     ClockComponent {
         id: clock
+        visible: isPrimaryScreen
     }
 
-    // Center login form with entrance animation
     Column {
         id: loginForm
         anchors.centerIn: parent
         spacing: 20
         width: 350
         opacity: 0
+        visible: isPrimaryScreen
 
-        NumberAnimation on opacity {
+        NumberAnimation {
+            id: loginFormOpacityAnim
+            target: loginForm
+            property: "opacity"
             from: 0
             to: 1
             duration: 800
             easing.type: Easing.OutCubic
         }
 
-        PropertyAnimation on anchors.verticalCenterOffset {
+        PropertyAnimation {
+            id: loginFormSlideAnim
+            target: loginForm
+            property: "anchors.verticalCenterOffset"
             from: 50
             to: 0
             duration: 800
@@ -79,15 +151,26 @@ Rectangle {
         }
     }
 
-    // Power buttons at the bottom
     PowerButtons {
         id: powerButtons
+        visible: isPrimaryScreen
+        opacity: 0
+
+        NumberAnimation {
+            id: powerButtonsOpacityAnim
+            target: powerButtons
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: 800
+            easing.type: Easing.OutCubic
+        }
     }
 
-    // Global click handler to close dropdowns
     MouseArea {
         anchors.fill: parent
         z: -1
+        enabled: isPrimaryScreen
         onClicked: {
             if (sessionSelector.isDropdownVisible()) {
                 sessionSelector.closeDropdown()
