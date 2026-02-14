@@ -8,14 +8,8 @@ Row {
         horizontalCenter: parent.horizontalCenter
     }
     spacing: 20
-    opacity: 0
 
-    NumberAnimation on opacity {
-        from: 0
-        to: 1
-        duration: 800
-        easing.type: Easing.OutCubic
-    }
+    property string iconColor: "W"
 
     Rectangle {
         width: 50
@@ -33,7 +27,7 @@ Row {
         }
 
         Image {
-            source: "../Assets/Reboot.svg"
+            source: "../Assets/Reboot" + iconColor + ".svg"
             width: 28
             height: 28
             anchors.centerIn: parent
@@ -64,7 +58,7 @@ Row {
         }
 
         Image {
-            source: "../Assets/Shutdown.svg"
+            source: "../Assets/Shutdown" + iconColor + ".svg"
             width: 28
             height: 28
             anchors.centerIn: parent

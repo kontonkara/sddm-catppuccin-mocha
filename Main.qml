@@ -10,6 +10,7 @@ Rectangle {
     property string usernameMode: config.stringValue("UsernameMode") || "editable"
     property string primaryMonitorName: config.stringValue("PrimaryMonitor") || ""
     property bool showBackgroundOnSecondary: config.boolValue("ShowBackgroundOnSecondary") !== false
+    property string iconColor: config.stringValue("IconColor") || "W"
 
     property string currentScreenName: ""
     property bool isPrimaryScreen: false
@@ -26,7 +27,6 @@ Rectangle {
         var win = root.Window.window
 
         if (win) {
-            // Match by window position
             for (var i = 0; i < Qt.application.screens.length; i++) {
                 var screen = Qt.application.screens[i]
                 if (Math.abs(win.x - screen.virtualX) < 100 && Math.abs(win.y - screen.virtualY) < 100) {
@@ -36,7 +36,6 @@ Rectangle {
             }
         }
 
-        // Determine if primary
         if (currentScreenName !== "") {
             if (primaryMonitorName === "") {
                 isPrimaryScreen = (currentScreenName === Qt.application.screens[0].name)
@@ -49,7 +48,6 @@ Rectangle {
 
         initialized = true
 
-        // Start animations if primary
         if (isPrimaryScreen) {
             loginFormOpacityAnim.start()
             loginFormSlideAnim.start()
@@ -58,19 +56,6 @@ Rectangle {
     }
 
     color: "#1e1e2e"
-
-    // Debug text (remove after testing)
-    Text {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.margins: 10
-        text: "Screen: " + (currentScreenName || "...") + " | Primary: " + isPrimaryScreen
-        color: "#b4befe"
-        font.pixelSize: 14
-        font.bold: true
-        z: 1000
-        visible: false  // Set to true for debugging
-    }
 
     Background {
         id: background
@@ -121,7 +106,8 @@ Rectangle {
             id: usernameField
             width: parent.width
             label: "Username"
-            icon: "Assets/User.svg"
+            iconName: "User"
+            iconColor: root.iconColor
             text: userModel.lastUser
             readOnly: usernameMode === "locked"
 
@@ -132,6 +118,7 @@ Rectangle {
             id: passwordField
             width: parent.width
             label: "Password"
+            iconColor: root.iconColor
             showPassword: root.showPassword
 
             onTogglePassword: root.showPassword = !root.showPassword
@@ -141,6 +128,7 @@ Rectangle {
         LoginButton {
             id: loginButton
             width: parent.width
+            iconColor: root.iconColor
 
             onDoLogin: sddm.login(usernameField.getText(), passwordField.getText(), sessionSelector.currentIndex)
         }
@@ -155,6 +143,7 @@ Rectangle {
         id: powerButtons
         visible: isPrimaryScreen
         opacity: 0
+        iconColor: root.iconColor
 
         NumberAnimation {
             id: powerButtonsOpacityAnim

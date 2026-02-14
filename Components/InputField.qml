@@ -5,7 +5,8 @@ Column {
     spacing: 8
 
     property string label: ""
-    property string icon: ""
+    property string iconName: ""
+    property string iconColor: "W"
     property alias text: textInput.text
     property bool readOnly: false
 
@@ -51,7 +52,7 @@ Column {
             spacing: 10
 
             Image {
-                source: "../" + icon
+                source: "../Assets/" + iconName + iconColor + ".svg"
                 width: 24
                 height: 24
                 anchors.verticalCenter: parent.verticalCenter

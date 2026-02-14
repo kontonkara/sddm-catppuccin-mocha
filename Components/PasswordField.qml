@@ -5,6 +5,7 @@ Column {
     spacing: 8
 
     property string label: "Password"
+    property string iconColor: "W"
     property bool showPassword: false
 
     signal returnPressed()
@@ -44,7 +45,7 @@ Column {
 
             Image {
                 id: passwordIcon
-                source: "../Assets/Password.svg"
+                source: "../Assets/Password" + iconColor + ".svg"
                 width: 24
                 height: 24
                 anchors.verticalCenter: parent.verticalCenter
@@ -75,7 +76,7 @@ Column {
 
             Image {
                 id: toggleIcon
-                source: showPassword ? "../Assets/PasswordShow.svg" : "../Assets/PasswordHide.svg"
+                source: showPassword ? "../Assets/PasswordShow" + iconColor + ".svg" : "../Assets/PasswordHide" + iconColor + ".svg"
                 width: 24
                 height: 24
                 anchors.verticalCenter: parent.verticalCenter

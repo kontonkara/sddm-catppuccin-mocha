@@ -7,6 +7,8 @@ Rectangle {
     radius: 8
     scale: mouseArea.pressed ? 0.98 : 1.0
 
+    property string iconColor: "W"
+
     signal doLogin()
 
     Behavior on color {
@@ -22,7 +24,7 @@ Rectangle {
         spacing: 10
 
         Image {
-            source: "../Assets/Login.svg"
+            source: "../Assets/Login" + iconColor + ".svg"
             width: 20
             height: 20
             anchors.verticalCenter: parent.verticalCenter
