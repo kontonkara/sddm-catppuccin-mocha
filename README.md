@@ -12,6 +12,8 @@ A minimal and elegant SDDM login theme featuring the Catppuccin Mocha color pale
 - **Power controls** (reboot/shutdown)
 - **Smooth animations** and hover effects
 - **Background support** (solid color, images, GIF)
+- **Multi-monitor support** with configurable primary display
+- **Configurable icon colors** (white or black)
 - **Component-based architecture** for easy customization
 
 ## Installation
@@ -53,6 +55,17 @@ BackgroundBlur=0
 
 # Background dimming: 0.0-1.0 (1.0 = no dim)
 BackgroundDim=1.0
+
+# Multi-monitor: specify monitor name for login form
+# Examples: eDP-1, HDMI-1, DP-1, DP-2
+# Leave empty for auto-detect (first screen)
+PrimaryMonitor=
+
+# Show background on secondary monitors
+ShowBackgroundOnSecondary=true
+
+# Icon color: "W" for white, "B" for black
+IconColor=W
 ```
 
 ## Customization
@@ -80,6 +93,19 @@ BackgroundDim=0.8
 
 Supported formats: JPG, PNG, GIF
 
+### Multi-monitor
+
+To show the login form only on a specific monitor, set `PrimaryMonitor` in `theme.conf`:
+```ini
+# Show login form on laptop screen
+PrimaryMonitor=eDP-1
+
+# Show login form on external monitor
+# PrimaryMonitor=HDMI-1
+```
+
+Leave `PrimaryMonitor` empty for auto-detection (uses the first screen).
+
 ## File Structure
 
 ```
@@ -87,14 +113,13 @@ sddm-catppuccin-mocha/
 ├── Main.qml              # Main theme entry
 ├── theme.conf            # Configuration file
 ├── metadata.desktop      # Theme metadata
-├── Assets/               # Icons (SVG)
-│   ├── User.svg
-│   ├── Password.svg
-│   ├── Login.svg
-│   ├── PasswordShow.svg
-│   ├── PasswordHide.svg
-│   ├── Reboot.svg
-│   └── Shutdown.svg
+├── Assets/               # Icons (SVG, W = white, B = black)
+│   ├── UserW.svg / UserB.svg
+│   ├── PasswordW.svg / PasswordB.svg
+│   ├── PasswordShowW.svg / PasswordShowB.svg
+│   ├── PasswordHideW.svg / PasswordHideB.svg
+│   ├── RebootW.svg / RebootB.svg
+│   └── ShutdownW.svg / ShutdownB.svg
 └── Components/           # QML components
     ├── Background.qml
     ├── ClockComponent.qml

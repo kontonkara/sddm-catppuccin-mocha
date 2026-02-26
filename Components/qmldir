@@ -1,0 +1,7 @@
+Background 1.0 Background.qml
+ClockComponent 1.0 ClockComponent.qml
+InputField 1.0 InputField.qml
+PasswordField 1.0 PasswordField.qml
+LoginButton 1.0 LoginButton.qml
+SessionSelector 1.0 SessionSelector.qml
+PowerButtons 1.0 PowerButtons.qml
